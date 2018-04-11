@@ -20,7 +20,7 @@ Predicted values based on the bidimensional regressional model object.
 }
 \examples{
 lm2euc <- lm2(depV1+depV2~indepV1+indepV2, NakayaData, transformation = 'Euclidean')
-predict(lm2euc, NakayaData[, 1:2])
+predict(lm2euc, NakayaData[, 3:4])
 }
 \seealso{
 \code{\link{lm2}}
