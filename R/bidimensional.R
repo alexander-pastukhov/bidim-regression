@@ -1,0 +1,212 @@
+library(Formula)
+
+
+#' Fitting Bidimensional Regression Models
+#'
+#' lm2 is used to fit bidimensional linear regression models using
+#' Euclidean and Affine transformations following the approach by Tobler (1965).
+#'
+#' @usage
+#' lm2(formula, data, transformation)
+#'
+#' @param formula a symbolic description of the model to be fitted in the format \code{A + B ~ C + D}, where
+#' \code{A} and \code{B} are dependent and \code{C} and \code{D} are indepdent variables
+#' @param data a data frame containing variables for the model.
+#' @param transformation the transformation to be used, either \code{'euclidean'} or \code{'affine'}.
+#'
+#' @return lm2 returns an object of class "lm2".
+#' @export
+#'
+#' @examples
+#' nakayaAffine <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'Affine')
+lm2 <- function(formula, data, transformation) { UseMethod("lm2") }
+
+#' @export
+lm2.formula <-  function(formula, data, transformation){
+
+  # Check arguments ---------------------------------------------------------
+  # Are they present?
+  if(missing(formula))
+  {
+    stop("'formula' is missing or incorrect")
+  }
+  if (missing(data)){
+    stop('argument "data" is missing')
+  }
+  if (missing(transformation)){
+    stop('argument "transformation" is missing')
+  }
+
+  # Valid type and values?
+  if (!is.data.frame(data))
+  {
+    stop('argument "data" must be a data frame')
+  }
+  if (!is.character(transformation) || !(tolower(transformation) %in% c('euclidean', 'affine'))){
+    stop("unknown transformation, please use either 'euclidean' or 'affine'")
+  }
+
+
+  # Extract variables from dataframe ----------------------------------------
+  model_formula <- Formula::Formula(formula)
+  DV <- model.part(model_formula, data = data, lhs = 1)
+  IV <- model.part(model_formula, data = data, rhs = 1)
+
+
+  # Fit the model -----------------------------------------------------------
+  lm2model <- lm2fit(cbind(DV, IV), tolower(transformation))
+
+
+
+  # Common information ------------------------------------------------------
+
+  # common stats for the bidimensional regresion
+  var_mean <- colMeans(data)
+  n <- nrow(data)
+  lm2model$r.squared <- 1- sum((lm2model$fitted_values[, 1]-data[, 1])^2 +(lm2model$fitted_values[, 2]-data[, 2])^2)/
+    sum((data[, 1]-var_mean[[1]])^2 +(data[, 2]-var_mean[[2]])^2)
+  lm2model$adj.r.squared <- 1-( ( (n-1)/(n-lm2model$npredictors-1)) * ( (n-2)/(n-lm2model$npredictors-2)) * ((n+1)/n))*(1-lm2model$r.squared)
+  lm2model$dAIC<- 2*n*log(1-lm2model$r.squared)+2*lm2model$df1
+  lm2model$F <- (lm2model$df2/lm2model$df1)*(lm2model$r.squared/(1-lm2model$r.squared))
+  lm2model$p.value<- pf(lm2model$F, lm2model$df1, lm2model$df2, lower.tail= FALSE, log.p= FALSE)
+
+  ## ------- the distortion index following Waterman and Gordon (1984), adjusted by Friedman and Kohler (2003)
+  di<- data.frame(D.sqr= c(NA,NA), Dmax.sqr= c(NA,NA), DI.sqr= c(NA,NA), row.names = c('Dependent', 'Independent'))
+  di$D.sqr[1]<- sum((data[, 1]-lm2model$fitted_values[, 1])^2)+
+    sum((data[, 2]-lm2model$fitted_values[, 2])^2)
+  di$D.sqr[2]<- sum((data[, 3]-lm2model$fitted.I[, 3])^2)+
+    sum((data[, 4]-lm2model$fitted.I[, 4])^2)
+
+  di$Dmax.sqr[1] <- sum((data[, 1]-var_mean[[1]])^2 +(data[, 2]-var_mean[[2]])^2)
+  di$Dmax.sqr[2] <- sum((data[, 3]-var_mean[[3]])^2 +(data[, 4]-var_mean[[4]])^2)
+  di$DI.sqr <- di$D.sqr/di$Dmax.sqr
+  lm2model$distortion_index <- di
+
+  # adding information about the call
+  lm2model$Call <- match.call(expand.dots = FALSE)
+  lm2model$formula <- formula
+  m <- match(c("formula", "data", "transformation"), names(lm2model$Call), 0L)
+  lm2model$formula <- lm2model$Call[2]
+  lm2model$data <- lm2model$Call[3]
+
+  return(lm2model)
+}
+
+
+#' Fits the specified model and computes stats
+#'
+#' Calls a specific transformation model function and then computes statistics
+#' that is common across all transformations.
+#' This function should not be called directly, please use \code{\link{lm2}}.
+#'
+#' @param data the preprocessed data frame from \code{\link{lm2}} function,
+#' so that the first two columns are the dependent variables and the other
+#' two are indepdent variables
+#' @param transformation the transformation to be used, either \code{'euclidean'} or \code{'affine'}.
+#'
+#' @return returns an object of class "lm2", see \code{\link{lm2}}
+#' for the description.
+#'
+#' @keywords internal
+lm2fit <- function(data, transformation){
+  lm2model <- switch(transformation,
+                     euclidean = lm2euclidean(data),
+                     affine = lm2affine(data),
+                     stop("unknown transformation, please use either 'euclidean' or 'affine'"))
+  class(lm2model) <- 'lm2'
+
+
+
+
+  return(lm2model)
+}
+
+#' Computes model for the euclidean transformation
+#'
+#' @param data the preprocessed data frame from \code{\link{lm2}} function,
+#' so that the first two columns are the dependent variables and the other
+#' two are indepdent variables
+#'
+#' @return object with transformation specific data to be supplemented with further stats
+lm2euclidean <- function(data){
+
+  lm2model <- list(transformation= 'euclidean',
+                   npredictors= 4,
+                   df1= 2L,
+                   df2= 2*nrow(data)-4L)
+
+  # arranging the data frame for the lm function
+  cZeros <- c(rep(0, nrow(data)))
+  cOnes <- c(rep(1, nrow(data)))
+  lm_data <- data.frame(
+    y= c(data[, 1], data[, 2]),
+    a1= c(cOnes, cZeros),
+    a2= c(cZeros, cOnes),
+    b1 = c( data[, 3], data[, 4]),
+    b2 = c(-data[, 4], data[, 3]))
+
+  # using lm to fit the model
+  lm2model$lm <- lm(y ~ 0 + a1 + a2 + b1 +b2, data= lm_data)
+
+  # coefficients and the transformation matrix
+  lm2model$coeff <- summary(lm2model$lm)$coeff[, 1]
+  lm2model$transformation_matrix <- matrix(c(lm2model$coeff['b1'], -lm2model$coeff['b2'], lm2model$coeff['a1'],
+                                           lm2model$coeff['b2'],  lm2model$coeff['b1'], lm2model$coeff['a2'],
+                                           0,0,1), nrow=3)
+  # calculating the transformed coefficients
+  lm2model$transformed_coeff <- c(
+    sqrt(lm2model$coeff[['b1']]^2 + lm2model$coeff[['b2']]^2),
+    sqrt(lm2model$coeff[['b1']]^2 + lm2model$coeff[['b2']]^2),
+    atan2(lm2model$coeff[['b2']], lm2model$coeff[['b1']])
+  )
+  names(lm2model$transformed_coeff) <- c('scale1', 'scale2', 'angle')
+
+  # getting the predicted values for dependent variables
+  lm2model$fitted_values <- setNames(data.frame(matrix(predict(lm2model$lm), ncol=2)), colnames(data)[1:2])
+
+
+  # getting the residuals
+  lm2model$residuals <- setNames(data.frame(matrix(lm2model$lm$residuals, ncol=2)), colnames(data)[1:2])
+
+  return(lm2model)
+}
+
+#' Computes model for the affine transformation
+#'
+#' @param data the preprocessed data frame from \code{\link{lm2}} function,
+#' so that the first two columns are the dependent variables and the other
+#' two are indepdent variables
+#'
+#' @return object with transformation specific data to be supplemented with further stats
+lm2affine <- function(data){
+  lm2model <- list(transformation= 'affine',
+                   npredictors= 6,
+                   df1= 4L,
+                   df2= 2*nrow(data)-6L)
+}
+
+
+
+#' @export
+print.lm2 <- function(object){
+  cat(sprintf('Call:\n'))
+  cat(deparse(object$Call))
+  cat('\n\n')
+  cat('Coefficients:\n')
+  coeff <- data.frame(as.list(object$coeff))
+  rownames(coeff) <- ''
+  printCoefmat(coeff)
+
+  # transformed coefficients, if applicable
+  if ("transformed_coeff" %in% names(object)){
+    cat('\nTransformed coefficients:\n')
+    transformed_coeff <- data.frame(as.list(object$transformed_coeff))
+    rownames(transformed_coeff) <- ''
+    printCoefmat(transformed_coeff)
+  }
+
+  # correlation strength
+  cat('\nMultiple R-squared:', object$r.squared, '\tAdjusted R-squared:', object$adj.r.squared)
+}
+
+
