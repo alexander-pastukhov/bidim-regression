@@ -15,6 +15,24 @@ library(Formula)
 #' @param transformation the transformation to be used, either \code{'euclidean'} or \code{'affine'}.
 #'
 #' @return lm2 returns an object of class "lm2".
+#' An object of class "lm" is a list containing at least the following components:
+#' \item{\code{transformation}}{string with the transformation type (\code{euclidean}, \code{affine}, or \code{projective})}
+#' \item{\code{npredictors}}{number of predictors used in the model: 4 for euclidean, 6 for affine, 8 for projective.}
+#' \item{\code{df_model, df_residual}}{degrees of freedom for the model and for the residuals}
+#' \item{\code{transformation_matrix}}{\code{3x3} transformation matrix}
+#' \item{\code{coeff}}{transformation coefficients, with \code{a} denoting the intercept terms.}
+#' \item{\code{transformed_coeff}}{\code{scale}, \code{angle}, and \code{sheer} coefficients, depends on transformation.}
+#' \item{\code{fitted_values}}{data frame containing fitted values for the original data set}
+#' \item{\code{residuals}}{data frame containing residuals  for the original fit}
+#' \item{\code{r.squared, adj.r.squared}}{R-squared and adjusted R-squared.}
+#' \item{\code{F, p.value}}{F-statistics and the corresponding p-value, given the \code{df_model} and \code{df_residual} degrees of freedom.}
+#' \item{\code{dAIC}}{Akaike Information Criterion (AIC) difference between the regression model and the null model. A negative values indicates that the regression model is better. See \cite{Nakaya (1997)}.}
+#' \item{\code{distortion_index}}{Distortion index following \cite{Waterman and Gordon (1984)}, as adjusted by \cite{Friedman and Kohler (2003)}}
+#' \item{\code{lm}}{an underlying \link[=lm]{linear model}}
+#' \item{\code{formula}}{formula, describing input and output columns}
+#' \item{\code{data}}{data used to fit the model}
+#' \item{\code{Call}}{function call information, incorporates the \code{formula}, \code{transformation}, and \code{data}.}
+
 #' @export
 #'
 #' @examples
@@ -49,8 +67,8 @@ lm2.formula <-  function(formula, data, transformation){
 
   # Extract variables from dataframe ----------------------------------------
   model_formula <- Formula::Formula(formula)
-  DV <- model.part(model_formula, data = data, lhs = 1)
-  IV <- model.part(model_formula, data = data, rhs = 1)
+  DV <- Formula::model.part(model_formula, data = data, lhs = 1)
+  IV <- Formula::model.part(model_formula, data = data, rhs = 1)
 
 
   # Fit the model -----------------------------------------------------------
@@ -66,9 +84,9 @@ lm2.formula <-  function(formula, data, transformation){
   lm2model$r.squared <- 1- sum((lm2model$fitted_values[, 1]-data[, 1])^2 +(lm2model$fitted_values[, 2]-data[, 2])^2)/
     sum((data[, 1]-var_mean[[1]])^2 +(data[, 2]-var_mean[[2]])^2)
   lm2model$adj.r.squared <- 1-( ( (n-1)/(n-lm2model$npredictors-1)) * ( (n-2)/(n-lm2model$npredictors-2)) * ((n+1)/n))*(1-lm2model$r.squared)
-  lm2model$dAIC<- 2*n*log(1-lm2model$r.squared)+2*lm2model$df1
-  lm2model$F <- (lm2model$df2/lm2model$df1)*(lm2model$r.squared/(1-lm2model$r.squared))
-  lm2model$p.value<- pf(lm2model$F, lm2model$df1, lm2model$df2, lower.tail= FALSE, log.p= FALSE)
+  lm2model$dAIC<- 2*n*log(1-lm2model$r.squared)+2*lm2model$df_model
+  lm2model$F <- (lm2model$df_residual/lm2model$df_model)*(lm2model$r.squared/(1-lm2model$r.squared))
+  lm2model$p.value<- pf(lm2model$F, lm2model$df_model, lm2model$df_residual, lower.tail= FALSE, log.p= FALSE)
 
   ## ------- the distortion index following Waterman and Gordon (1984), adjusted by Friedman and Kohler (2003)
   di<- data.frame(D.sqr= c(NA,NA), Dmax.sqr= c(NA,NA), DI.sqr= c(NA,NA), row.names = c('Dependent', 'Independent'))
@@ -121,6 +139,10 @@ lm2fit <- function(data, transformation){
   return(lm2model)
 }
 
+
+# Euclidean ---------------------------------------------------------------
+
+
 #' Computes model for the euclidean transformation
 #'
 #' @param data the preprocessed data frame from \code{\link{lm2}} function,
@@ -128,12 +150,13 @@ lm2fit <- function(data, transformation){
 #' two are indepdent variables
 #'
 #' @return object with transformation specific data to be supplemented with further stats
+#' @keywords internal
 lm2euclidean <- function(data){
 
   lm2model <- list(transformation= 'euclidean',
                    npredictors= 4,
-                   df1= 2L,
-                   df2= 2*nrow(data)-4L)
+                   df_model= 2L,
+                   df_residual= 2*nrow(data)-4L)
 
   # arranging the data frame for the lm function
   cZeros <- c(rep(0, nrow(data)))
@@ -146,7 +169,7 @@ lm2euclidean <- function(data){
     b2 = c(-data[, 4], data[, 3]))
 
   # using lm to fit the model
-  lm2model$lm <- lm(y ~ 0 + a1 + a2 + b1 +b2, data= lm_data)
+  lm2model$lm <- stats::lm(y ~ 0 + a1 + a2 + b1 +b2, data= lm_data)
 
   # coefficients and the transformation matrix
   lm2model$coeff <- summary(lm2model$lm)$coeff[, 1]
@@ -171,6 +194,11 @@ lm2euclidean <- function(data){
   return(lm2model)
 }
 
+
+
+# Affine ------------------------------------------------------------------
+
+
 #' Computes model for the affine transformation
 #'
 #' @param data the preprocessed data frame from \code{\link{lm2}} function,
@@ -178,14 +206,72 @@ lm2euclidean <- function(data){
 #' two are indepdent variables
 #'
 #' @return object with transformation specific data to be supplemented with further stats
+#' @keywords internal
 lm2affine <- function(data){
   lm2model <- list(transformation= 'affine',
                    npredictors= 6,
-                   df1= 4L,
-                   df2= 2*nrow(data)-6L)
+                   df_model= 4L,
+                   df_residual= 2*nrow(data)-6L)
+
+  # re-arraging data for affine regression model
+  cZeros <- c(rep(0, nrow(data)))
+  cOnes <- c(rep(1, nrow(data)))
+  lm_data <- data.frame(
+    y= c(data[, 1], data[, 2]),
+    a1= c(cOnes, cZeros),
+    a2= c(cZeros, cOnes),
+    b1= c(data[, 3], cZeros),
+    b2= c(data[, 4], cZeros),
+    b3= c(cZeros, data[, 3]),
+    b4= c(cZeros, data[, 4]))
+
+  # using lm to fit the model
+  lm2model$lm <- stats::lm(y ~ 0 + a1 + a2 + b1 +b2 +b3 +b4, data= lm_data)
+
+  # coefficients and the transformation matrix
+  lm2model$coeff <- summary(lm2model$lm)$coeff[, 1]
+  lm2model$transformation_matrix <- matrix(c(lm2model$coeff['b1'],  lm2model$coeff['b2'], lm2model$coeff['a1'],
+                                             lm2model$coeff['b3'],  lm2model$coeff['b4'], lm2model$coeff['a2'],
+                                             0,0,1), nrow=3)
+
+  # Calculating the transformed coefficients
+  aff_angle <- atan2(lm2model$coeff[['b3']], lm2model$coeff[['b1']])
+  aff_shear <- ((lm2model$coeff[['b4']]/lm2model$coeff[['b2']])*sin(aff_angle)+cos(aff_angle))/
+    ((lm2model$coeff[['b4']]/lm2model$coeff[['b2']])*cos(aff_angle)-sin(aff_angle))
+
+  aff_scale1 <- sqrt(lm2model$coeff[['b1']]^2+lm2model$coeff[['b3']]^2)
+  if (is.nan(aff_shear))
+  {
+    aff_shear <- (lm2model$coeff[['b1']]-cos(aff_angle)*aff_scale1)/lm2model$coeff[['b3']]
+  }
+  if (is.nan(aff_shear))
+  {
+    aff_shear <- (sin(aff_angle)*aff_scale1+lm2model$coeff[['b2']])/lm2model$coeff[['b4']]
+  }
+
+  aff_scale2 <- lm2model$coeff[['b2']]/(aff_shear*cos(aff_angle)-sin(aff_angle))
+  if (is.nan(aff_scale2))
+  {
+    aff_scale2 <- aff_scale1
+  }
+  lm2model$transformed_coefficients <- c(
+    aff_scale1, aff_scale2, aff_shear, aff_angle
+  )
+  names(lm2model$transformed_coefficients) <- c('scale1', 'scale2', 'shear', 'angle')
+
+
+  # getting the predicted values for dependent variables
+  lm2model$fitted_values <- setNames(data.frame(matrix(predict(lm2model$lm), ncol=2)), colnames(data)[1:2])
+
+
+  # getting the residuals
+  lm2model$residuals <- setNames(data.frame(matrix(lm2model$lm$residuals, ncol=2)), colnames(data)[1:2])
+
+  return(lm2model)
 }
 
 
+# Printing and summary ----------------------------------------------------
 
 #' @export
 print.lm2 <- function(object){

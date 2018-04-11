@@ -1,7 +1,7 @@
 #' Calculates the bidimensional regression between two 2D configurations
 #'
 #' @description Calculates the bidimensional regression between two 2D configurations using both Euclidean and Affine transformations following the approach by Tobler (1965).
-#' This function assumes strict data format and returns all coefficients and statistics in a single structure. Same functionality is now re-implemented in a R-friendly style, see \seealso{rm2} function.
+#' This function assumes strict data format and returns all coefficients and statistics in a single structure. Same functionality is now re-implemented in a R-friendly style, see \code{\link{lm2}} function.
 #'
 #' @param coord table that must contain two columns for dependent variables (named \code{depV1} and \code{depV2}) and two columns for independent variables (named \code{indepV1} and \code{indepV2}).
 #'
@@ -33,7 +33,7 @@
 #' resultingMeasures <- BiDimRegression(NakayaData)
 #' print(resultingMeasures)
 #'
-#' @seealso \code{\link{rm2}}
+#' @seealso \code{\link{lm2}}
 BiDimRegression <-
 function (coord)
 {

@@ -17,3 +17,4 @@ object with transformation specific data to be supplemented with further stats
 \description{
 Computes model for the euclidean transformation
 }
+\keyword{internal}

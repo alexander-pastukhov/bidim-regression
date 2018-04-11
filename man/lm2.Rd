@@ -16,6 +16,23 @@ lm2(formula, data, transformation)
 }
 \value{
 lm2 returns an object of class "lm2".
+An object of class "lm" is a list containing at least the following components:
+\item{\code{transformation}}{string with the transformation type (\code{euclidean}, \code{affine}, or \code{projective})}
+\item{\code{npredictors}}{number of predictors used in the model: 4 for euclidean, 6 for affine, 8 for projective.}
+\item{\code{df_model, df_residual}}{degrees of freedom for the model and for the residuals}
+\item{\code{transformation_matrix}}{\code{3x3} transformation matrix}
+\item{\code{coeff}}{transformation coefficients, with \code{a} denoting the intercept terms.}
+\item{\code{transformed_coeff}}{\code{scale}, \code{angle}, and \code{sheer} coefficients, depends on transformation.}
+\item{\code{fitted_values}}{data frame containing fitted values for the original data set}
+\item{\code{residuals}}{data frame containing residuals  for the original fit}
+\item{\code{r.squared, adj.r.squared}}{R-squared and adjusted R-squared.}
+\item{\code{F, p.value}}{F-statistics and the corresponding p-value, given the \code{df_model} and \code{df_residual} degrees of freedom.}
+\item{\code{dAIC}}{Akaike Information Criterion (AIC) difference between the regression model and the null model. A negative values indicates that the regression model is better. See \cite{Nakaya (1997)}.}
+\item{\code{distortion_index}}{Distortion index following \cite{Waterman and Gordon (1984)}, as adjusted by \cite{Friedman and Kohler (2003)}}
+\item{\code{lm}}{an underlying \link[=lm]{linear model}}
+\item{\code{formula}}{formula, describing input and output columns}
+\item{\code{data}}{data used to fit the model}
+\item{\code{Call}}{function call information, incorporates the \code{formula}, \code{transformation}, and \code{data}.}
 }
 \description{
 lm2 is used to fit bidimensional linear regression models using

@@ -35,7 +35,7 @@ an S3 class \code{BiDimRegression} containing all essential measures of the bidi
 }
 \description{
 Calculates the bidimensional regression between two 2D configurations using both Euclidean and Affine transformations following the approach by Tobler (1965).
-This function assumes strict data format and returns all coefficients and statistics in a single structure. Same functionality is now re-implemented in a R-friendly style, see \seealso{rm2} function.
+This function assumes strict data format and returns all coefficients and statistics in a single structure. Same functionality is now re-implemented in a R-friendly style, see \code{\link{lm2}} function.
 }
 \examples{
 resultingMeasures <- BiDimRegression(NakayaData)
@@ -43,5 +43,5 @@ print(resultingMeasures)
 
 }
 \seealso{
-\code{\link{rm2}}
+\code{\link{lm2}}
 }
