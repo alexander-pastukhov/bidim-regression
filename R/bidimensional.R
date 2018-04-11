@@ -296,3 +296,63 @@ print.lm2 <- function(object){
 }
 
 
+#' Makes a lightweight summary lm2 object
+#'
+#' Drops heavy bits, like the data frame with predicted values or the lm object.
+#' However, the print tells more! :)
+#'
+#' @param object an object of class "lm2", see \code{\link{lm2}}
+#'
+#' @export
+#' @keywords internal
+summary.lm2 <- function(object){
+  # copying most of the object
+  object_summary<- object
+  class(object_summary) <- "summary.lm2"
+
+  # dropping heavy bits
+  if ('lm' %in% names(object_summary)){
+    object_summary$coeff <- summary(object_summary$lm)$coeff
+  }
+  else{
+    object_summary$coeff <- data.frame(as.list(object$coeff))
+    rownames(object_summary$coeff) <- ''
+  }
+  object_summary$fitted_values <- NULL
+  object_summary$lm <- NULL
+
+  return(object_summary)
+}
+
+#' @export
+print.summary.lm2 <- function(object){
+  cat(sprintf('Call:\n'))
+  cat(deparse(object$Call))
+  cat('\n\n')
+  cat('Coefficients:\n')
+  printCoefmat(object$coeff)
+
+  # transformed coefficients
+  if ('transformed_coeff' %in% names(object)){
+    cat('\nTransformed coefficients:\n')
+    transformed_coeff <- data.frame(as.list(object$transformed_coeff))
+    rownames(transformed_coeff) <- ''
+    printCoefmat(transformed_coeff)
+  }
+
+  # distortion index
+  cat('\nDistortion index:\n')
+  di <- t(object$distortion_index)
+  rownames(di)<- c('Distortion distance, squared',
+                   'Maximal distortion distance, squared',
+                   'Distortion index, squared')
+  printCoefmat(di)
+
+  # statistics
+  cat('\nMultiple R-squared:', object$r.squared, '\tAdjusted R-squared:', object$adj.r.squared)
+  cat('\nF-statistic:', object$F, 'on', object$df_model, 'and', object$df_residual, 'DF, p-value:', format.pval(object$p.value))
+  cat('\nDifference in AIC to the null model:', object$dAIC)
+  if (object$dAIC<2){
+    cat('*')
+  }
+}
