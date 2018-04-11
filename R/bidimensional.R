@@ -356,3 +356,39 @@ print.summary.lm2 <- function(object){
     cat('*')
   }
 }
+
+
+# Predicting  -------------------------------------------------------------
+
+#' Predict method for Bidimensional Regression Model Fits
+#'
+#' Predicted values based on the bidimensional regressional model object.
+#'
+#' @param object an object of class "lm2"
+#' @param newdata An optional two column data frame with independent variables.
+#' If omitted, the fitted values are used.
+#'
+#' @return a two column data frame with predicted values for dependent variables.
+#' @export
+#'
+#' @seealso \code{\link{lm2}}
+#' @examples
+#' lm2euc <- lm2(depV1+depV2~indepV1+indepV2, NakayaData, transformation = 'Euclidean')
+#' predict(lm2euc, NakayaData[, 3:4])
+predict.lm2 <-  function(object, newdata) {
+  # returning predictions for original independent variable values
+  if (missing(newdata)){
+    return(object$fitted_values)
+  }
+
+  # otherwise, checking dimensionality
+  if (ncol(newdata)!=2) {
+    stop('New data must be a two column matrix/data.frame.')
+  }
+
+  newdata$z <- 1
+  newly_fitted <- data.matrix(newdata) %*% object$transformation_matrix
+  newly_fitted <- newly_fitted[, 1:2]/newly_fitted[, 3]
+  colnames(newly_fitted) <- colnames(newdata)[1:2]
+  return(newly_fitted)
+}

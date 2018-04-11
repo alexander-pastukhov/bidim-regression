@@ -10,6 +10,7 @@
 \item{object}{an object of class "lm2", see \code{\link{lm2}}}
 }
 \description{
-Drops heavy bits, like the data frame with predicted values or the lm object
+Drops heavy bits, like the data frame with predicted values or the lm object.
+However, the print tells more! :)
 }
 \keyword{internal}
