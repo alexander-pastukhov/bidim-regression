@@ -12,7 +12,7 @@ lm2(formula, data, transformation)
 
 \item{data}{a data frame containing variables for the model.}
 
-\item{transformation}{the transformation to be used, either \code{'euclidean'} or \code{'affine'}.}
+\item{transformation}{the transformation to be used, either \code{'euclidean'}, \code{'affine'}, or \code{'projective'}.}
 }
 \value{
 lm2 returns an object of class "lm2".
@@ -39,7 +39,10 @@ lm2 is used to fit bidimensional linear regression models using
 Euclidean and Affine transformations following the approach by Tobler (1965).
 }
 \examples{
-nakayaAffine <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'Affine')
+lm2euc <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'euclidean')
+lm2aff <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'affine')
+lm2prj <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'projective')
+anova(lm2euc, lm2aff, lm2prj)
 }
 \seealso{
 \code{\link{anova.lm2}} \code{\link{BiDimRegression}}

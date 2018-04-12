@@ -12,7 +12,7 @@ library(Formula)
 #' @param formula a symbolic description of the model to be fitted in the format \code{A + B ~ C + D}, where
 #' \code{A} and \code{B} are dependent and \code{C} and \code{D} are indepdent variables
 #' @param data a data frame containing variables for the model.
-#' @param transformation the transformation to be used, either \code{'euclidean'} or \code{'affine'}.
+#' @param transformation the transformation to be used, either \code{'euclidean'}, \code{'affine'}, or \code{'projective'}.
 #'
 #' @return lm2 returns an object of class "lm2".
 #' An object of class "lm" is a list containing at least the following components:
@@ -36,7 +36,10 @@ library(Formula)
 #' @seealso \code{\link{anova.lm2}} \code{\link{BiDimRegression}}
 #'
 #' @examples
-#' nakayaAffine <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'Affine')
+#' lm2euc <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'euclidean')
+#' lm2aff <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'affine')
+#' lm2prj <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'projective')
+#' anova(lm2euc, lm2aff, lm2prj)
 lm2 <- function(formula, data, transformation) { UseMethod("lm2") }
 
 #' @export
@@ -60,8 +63,8 @@ lm2.formula <-  function(formula, data, transformation){
   {
     stop('argument "data" must be a data frame')
   }
-  if (!is.character(transformation) || !(tolower(transformation) %in% c('euclidean', 'affine'))){
-    stop("unknown transformation, please use either 'euclidean' or 'affine'")
+  if (!is.character(transformation) || !(tolower(transformation) %in% c('euclidean', 'affine', 'projective'))){
+    stop("unknown transformation, please use either 'euclidean', 'affine', or 'projective'")
   }
 
 
@@ -69,38 +72,14 @@ lm2.formula <-  function(formula, data, transformation){
   model_formula <- Formula::Formula(formula)
   DV <- Formula::model.part(model_formula, data = data, lhs = 1)
   IV <- Formula::model.part(model_formula, data = data, rhs = 1)
-  data= cbind(DV, IV)
 
   # Fit the model -----------------------------------------------------------
-  lm2model <- lm2fit(data, tolower(transformation))
+  lm2model <- lm2fit(cbind(DV, IV), tolower(transformation))
 
 
 
-  # Common information ------------------------------------------------------
 
-  # common stats for the bidimensional regresion
-  var_mean <- colMeans(data)
-  n <- nrow(data)
-  lm2model$r.squared <- 1- sum((lm2model$fitted_values[, 1]-data[, 1])^2 +(lm2model$fitted_values[, 2]-data[, 2])^2)/
-    sum((data[, 1]-var_mean[[1]])^2 +(data[, 2]-var_mean[[2]])^2)
-  lm2model$adj.r.squared <- 1-( ( (n-1)/(n-lm2model$npredictors-1)) * ( (n-2)/(n-lm2model$npredictors-2)) * ((n+1)/n))*(1-lm2model$r.squared)
-  lm2model$dAIC<- 2*n*log(1-lm2model$r.squared)+2*lm2model$df_model
-  lm2model$F <- (lm2model$df_residual/lm2model$df_model)*(lm2model$r.squared/(1-lm2model$r.squared))
-  lm2model$p.value<- pf(lm2model$F, lm2model$df_model, lm2model$df_residual, lower.tail= FALSE, log.p= FALSE)
-
-  ## ------- the distortion index following Waterman and Gordon (1984), adjusted by Friedman and Kohler (2003)
-  di<- data.frame(D.sqr= c(NA,NA), Dmax.sqr= c(NA,NA), DI.sqr= c(NA,NA), row.names = c('Dependent', 'Independent'))
-  di$D.sqr[1]<- sum((data[, 1]-lm2model$fitted_values[, 1])^2)+
-    sum((data[, 2]-lm2model$fitted_values[, 2])^2)
-  di$D.sqr[2]<- sum((data[, 3]-lm2model$fitted.I[, 3])^2)+
-    sum((data[, 4]-lm2model$fitted.I[, 4])^2)
-
-  di$Dmax.sqr[1] <- sum((data[, 1]-var_mean[[1]])^2 +(data[, 2]-var_mean[[2]])^2)
-  di$Dmax.sqr[2] <- sum((data[, 3]-var_mean[[3]])^2 +(data[, 4]-var_mean[[4]])^2)
-  di$DI.sqr <- di$D.sqr/di$Dmax.sqr
-  lm2model$distortion_index <- di
-
-  # adding information about the call
+  # Adding information about the call ---------------------------------------
   lm2model$Call <- match.call(expand.dots = FALSE)
   lm2model$formula <- formula
   m <- match(c("formula", "data", "transformation"), names(lm2model$Call), 0L)
@@ -130,11 +109,32 @@ lm2fit <- function(data, transformation){
   lm2model <- switch(transformation,
                      euclidean = lm2euclidean(data),
                      affine = lm2affine(data),
+                     projective= lm2projective(data),
                      stop("unknown transformation, please use either 'euclidean' or 'affine'"))
   class(lm2model) <- 'lm2'
 
 
+  # common stats for the bidimensional regresion
+  var_mean <- colMeans(data)
+  n <- nrow(data)
+  lm2model$r.squared <- 1- sum((lm2model$fitted_values[, 1]-data[, 1])^2 +(lm2model$fitted_values[, 2]-data[, 2])^2)/
+    sum((data[, 1]-var_mean[[1]])^2 +(data[, 2]-var_mean[[2]])^2)
+  lm2model$adj.r.squared <- 1-( ( (n-1)/(n-lm2model$npredictors-1)) * ( (n-2)/(n-lm2model$npredictors-2)) * ((n+1)/n))*(1-lm2model$r.squared)
+  lm2model$dAIC<- 2*n*log(1-lm2model$r.squared)+2*lm2model$df_model
+  lm2model$F <- (lm2model$df_residual/lm2model$df_model)*(lm2model$r.squared/(1-lm2model$r.squared))
+  lm2model$p.value<- pf(lm2model$F, lm2model$df_model, lm2model$df_residual, lower.tail= FALSE, log.p= FALSE)
 
+  ## ------- the distortion index following Waterman and Gordon (1984), adjusted by Friedman and Kohler (2003)
+  di<- data.frame(D.sqr= c(NA,NA), Dmax.sqr= c(NA,NA), DI.sqr= c(NA,NA), row.names = c('Dependent', 'Independent'))
+  di$D.sqr[1]<- sum((data[, 1]-lm2model$fitted_values[, 1])^2)+
+    sum((data[, 2]-lm2model$fitted_values[, 2])^2)
+  di$D.sqr[2]<- sum((data[, 3]-lm2model$fitted.I[, 3])^2)+
+    sum((data[, 4]-lm2model$fitted.I[, 4])^2)
+
+  di$Dmax.sqr[1] <- sum((data[, 1]-var_mean[[1]])^2 +(data[, 2]-var_mean[[2]])^2)
+  di$Dmax.sqr[2] <- sum((data[, 3]-var_mean[[3]])^2 +(data[, 4]-var_mean[[4]])^2)
+  di$DI.sqr <- di$D.sqr/di$Dmax.sqr
+  lm2model$distortion_index <- di
 
   return(lm2model)
 }
@@ -266,6 +266,63 @@ lm2affine <- function(data){
 
   # getting the residuals
   lm2model$residuals <- setNames(data.frame(matrix(lm2model$lm$residuals, ncol=2)), colnames(data)[1:2])
+
+  return(lm2model)
+}
+
+
+# Projective --------------------------------------------------------------
+
+#' Computes model for the projective transformation
+#'
+#' @param data the preprocessed data frame from \code{\link{lm2}} function,
+#' so that the first two columns are the dependent variables and the other
+#' two are indepdent variables
+#'
+#' @return object with transformation specific data to be supplemented with further stats
+#' @keywords internal
+lm2projective <- function(data){
+  ## Preparing a placeholder for the class
+  lm2model <- list(transformation= 'projective',
+                   npredictors= 8,
+                   df_model= 6L,
+                   df_residual= 2*nrow(data)-8L)
+
+  # preparing  matrix for the projective  model
+  A <- matrix(0, nrow= nrow(data) * 2, ncol = 9)
+  cZeros <- rep(0, nrow(data))
+  cOnes <- rep(1, nrow(data))
+
+  # laying out parameters
+  A[, 1] <- c(data[, 3], cZeros)
+  A[, 2] <- c(data[, 4], cZeros)
+  A[, 3] <- c(cOnes,    cZeros)
+
+  A[, 4] <- c(cZeros, data[, 3])
+  A[, 5] <- c(cZeros, data[, 4])
+  A[, 6] <- c(cZeros, cOnes)
+
+  A[, 7] <- c( -data[, 1]*data[, 3], -data[, 2]*data[, 3])
+  A[, 8] <- c( -data[, 1]*data[, 4], -data[, 2]*data[, 4])
+  A[, 9] <- c(  data[, 1],            data[, 2])
+
+  # using singular value decomposition
+  V <- svd(A)$v
+
+  # copying over results
+  lm2model$coeff <- -V[1:8, 9]/V[9,9]
+  names(lm2model$coeff) <- c('a1', 'a2', 'a3', 'b1', 'b1', 'b3', 'c1', 'c2')
+  lm2model$transformation_matrix <- matrix(c(lm2model$coeff, 1), nrow=3)
+
+  # computing the predicted values for dependent variables
+  IV <- data[, 3:4]
+  IV$z <- 1
+  fitted_DV <- data.matrix(IV) %*% lm2model$transformation_matrix
+  lm2model$fitted_values <- data.frame(fitted_DV[, 1:2]/fitted_DV[, 3])
+  colnames(lm2model$fitted_values) <- colnames(data)[1:2]
+
+  # getting the residuals
+  lm2model$residuals <- setNames(data[, 1:2]-lm2model$fitted_values, colnames(data)[1:2])
 
   return(lm2model)
 }

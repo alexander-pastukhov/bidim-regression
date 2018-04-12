@@ -33,7 +33,7 @@ ggplot(data= EyegazeData, aes(x= x, y= y, color= target, fill= target)) +
   ggtitle('Raw eye gaze')
 ```
 
-## Using \code{lm2} to transform the eye gaze
+## Using lm2 to transform the eye gaze
 
 ```{r Adjust gaze, fig.width= 5, out.width = "100%", fig.asp= 3/4, dpi = 200}
 
