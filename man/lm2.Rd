@@ -41,3 +41,6 @@ Euclidean and Affine transformations following the approach by Tobler (1965).
 \examples{
 nakayaAffine <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'Affine')
 }
+\seealso{
+\code{\link{anova.lm2}} \code{\link{BiDimRegression}}
+}

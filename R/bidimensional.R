@@ -32,8 +32,8 @@ library(Formula)
 #' \item{\code{formula}}{formula, describing input and output columns}
 #' \item{\code{data}}{data used to fit the model}
 #' \item{\code{Call}}{function call information, incorporates the \code{formula}, \code{transformation}, and \code{data}.}
-
 #' @export
+#' @seealso \code{\link{anova.lm2}} \code{\link{BiDimRegression}}
 #'
 #' @examples
 #' nakayaAffine <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'Affine')
@@ -69,10 +69,10 @@ lm2.formula <-  function(formula, data, transformation){
   model_formula <- Formula::Formula(formula)
   DV <- Formula::model.part(model_formula, data = data, lhs = 1)
   IV <- Formula::model.part(model_formula, data = data, rhs = 1)
-
+  data= cbind(DV, IV)
 
   # Fit the model -----------------------------------------------------------
-  lm2model <- lm2fit(cbind(DV, IV), tolower(transformation))
+  lm2model <- lm2fit(data, tolower(transformation))
 
 
 
@@ -399,7 +399,8 @@ predict.lm2 <-  function(object, newdata) {
 
 #' Anova for lm2 objects
 #'
-#' Anova for lm2 objects.
+#' Anova for lm2 objects, returns a table with pairwise comparisons
+#' between models or, if only one model was supplied, with the null model.
 #'
 #'
 #' @param object an object of class "lm2"

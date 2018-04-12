@@ -15,7 +15,8 @@
 an anova data frame
 }
 \description{
-Anova for lm2 objects.
+Anova for lm2 objects, returns a table with pairwise comparisons
+between models or, if only one model was supplied, with the null model.
 }
 \examples{
 lm2euc <- lm2(depV1+depV2~indepV1+indepV2, NakayaData, transformation = 'Euclidean')

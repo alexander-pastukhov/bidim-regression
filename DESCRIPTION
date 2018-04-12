@@ -16,4 +16,7 @@ NeedsCompilation: no
 Repository: CRAN
 RoxygenNote: 6.0.1
 LazyData: true
-Suggests: testthat
+Suggests: testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

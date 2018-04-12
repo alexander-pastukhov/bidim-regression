@@ -1,0 +1,54 @@
+---
+title: "Eye gaze mapping"
+author: "Alexander (Sasha) Pastukhov"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Eye gaze mapping}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Bidimensional regression can be used to transform the eye gaze data into a the screen coordinate system using a calibration sequence. For this, we use known target coordinates as independent variables. Please note that the example below assumes that participants fixate faithfully for most of the time and that recording artifacts, such as blinks, were already removed. This example will use the \code{EyegazeData} example dataset.
+
+
+## Plotting raw data
+
+```{r raw data, echo=TRUE, message=FALSE, warning=FALSE, fig.width= 5, out.width = "100%", fig.asp= 3/4, dpi = 200}
+library(BiDimRegression)
+library(dplyr)
+library(ggplot2)
+
+ggplot(data= EyegazeData, aes(x= x, y= y, color= target, fill= target)) +
+  geom_point(data= EyegazeData %>% group_by(target, target_x, target_y) %>% summarise(),
+             aes(x= target_x, y= target_y), shape= 21, size= 10, fill= 'white') + 
+  geom_point(alpha= 0.5, shape= 21) + 
+  ggtitle('Raw eye gaze')
+```
+
+## Using \code{lm2} to transform the eye gaze
+
+```{r Adjust gaze, fig.width= 5, out.width = "100%", fig.asp= 3/4, dpi = 200}
+
+lm2aff <- lm2(target_x + target_y ~ x + y,  EyegazeData, transformation = 'affine')
+adjusted_gaze <- data.frame(predict(lm2aff))
+colnames(adjusted_gaze) <- c('adjX', 'adjY')
+adjusted_gaze <- cbind(EyegazeData, adjusted_gaze)
+
+
+ggplot(data= adjusted_gaze, aes(x= adjX, y= adjY, color= target, fill= target)) +
+  geom_point(data= adjusted_gaze %>% group_by(target, target_x, target_y) %>% summarise(),
+             aes(x= target_x, y= target_y), shape= 21, size= 10, fill= 'white') + 
+  geom_point(alpha= 0.5, shape= 21) + 
+  xlab('x')+
+  ylab('y')+
+  ggtitle('Adjusted eye gaze')
+```
+
