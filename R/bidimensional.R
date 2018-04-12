@@ -418,68 +418,77 @@ anova.lm2 <- function(object, ...)
   # checkings whether dots are lm2 objects
   dots_are_lm2 <- as.logical(vapply(list(...), is, NA, "lm2"))
 
-  if (!any(dots_are_lm2)) {
-    # single model, for which we actually already computed statistics relative to the null model
+  # merging models into a list
+  all_models <- c(list(object), list(...)[dots_are_lm2])
+
+  # checking that they all were fitted to the same data
+  same_df <- vapply(all_models,  function(lm2object, df_name) { lm2object$data == df_name }, NA, all_models[[1]]$data)
+  if (any(!same_df)){
+    warning('Not all models are based on the same data as the first one, ignoring them')
+  }
+  all_models <- all_models[same_df]
+
+  # checking for duplicate transforms
+  transforms <- sapply(all_models, function(lm2object){lm2object$transformation})
+  retain <- rep(TRUE, length(all_models))
+  for(iModel in 2:length(tranforms)){
+    if (transforms[iModel] %in% transforms[1:(iModel-1)]){
+      retain[iModel] <- FALSE
+    }
+  }
+  if (any(!retain)){
+    warning('DUplicate models, ignoring them')
+  }
+  all_models <- all_models[retain]
+
+  if (length(all_models)==1) {
+    # it all boiled down to a single model, for which we actually already computed statistics relative to the null model
     # thus, we just copy the numbers into a table
     anova_tbl <- data.frame(dAIC = object$dAIC,
                             df1 = as.integer(object$df_model),
                             df2 = as.integer(object$df_residual),
                             F= object$F,
                             p.value= object$p.value)
-    row.names(anova_tbl) <- c(paste(object$transformation, 'null', sep= ' x '))
-
-    anova_object <- list(anova_table = anova_tbl)
-    class(anova_object) <- 'anova.lm2'
-    return(anova_object)
+    row.names(anova_tbl) <- c(paste(object$transformation, 'null', sep= ' vs. '))
   }
-}
+  else {
+    # we have more than one! First, let's order them based on complexity
+    predictorsN <- sapply(all_models, function(lm2object){lm2object$npredictors})
+    all_models <- all_models[order(predictorsN)]
 
-#   # sorting model based on number of predictors
-#   npredictors <- c()
-#   for(current.model in models){
-#     npredictors <- c(npredictors, current.model$npredictors)
-#   }
-#   models <- models[order(npredictors)]
-#
-#   # comparing each model to the previous one
-#   anova.table <- data.frame(transformation= rep(NA, length(models)),
-#                             df1= NA,
-#                             df2= NA,
-#                             dAIC= NA,
-#                             F= NA,
-#                             p.value= NA)
-#   anova.table$transformation[1] <- tolower(models[[1]]$transformation)
-#
-#   for(i.Model in 2:length(models)){
-#     # no point comparing same transformation
-#     if (models[[i.Model-1]]$transformation==models[[i.Model]]$transformation){
-#       next;
-#     };
-#
-#     anova.table$transformation[i.Model] <- tolower(models[[i.Model]]$transformation)
-#     anova.table$df1[i.Model]<- models[[i.Model]]$df1-models[[i.Model-1]]$df1
-#     anova.table$df2[i.Model]<- models[[i.Model]]$df2
-#     anova.table$F[i.Model] <- (anova.table$df2[i.Model]/anova.table$df1[i.Model])*((models[[i.Model]]$r.squared-models[[i.Model-1]]$r.squared)/(1-models[[i.Model]]$r.squared))
-#     anova.table$p.value[i.Model]<- pf(anova.table$F[i.Model], anova.table$df1[i.Model], anova.table$df2[i.Model], lower.tail = FALSE, log.p = FALSE)
-#     anova.table$dAIC[i.Model] <- 2*nrow(models[[i.Model]]$fitted.values)*log((1-models[[i.Model]]$r.squared)/
-#                                                                                (1-models[[i.Model-1]]$r.squared))+2*(models[[i.Model]]$npredictors-models[[i.Model-1]]$npredictors)
-#   }
-#
-#   anova.table <- subset(anova.table, !is.na(transformation))
-#   row.names(anova.table)<-anova.table$transformation
-#   anova.table <- subset(anova.table, select = -transformation)
-#
-#   object <- list(anova.table= anova.table, dimsN= models[[1]]$dimsN)
-#
-#   class(object) <- 'anova.rmNDim'
-#   return(object)
-# }
-#
-# rm2printAnova <- function(object){
-#   cat('Bidimensional regression:\n')
-#   printCoefmat(object$anova.table, P.values= TRUE, has.Pvalue=TRUE, na.print = '')
-# }
-#
+
+    # Let's do pairwise comparisons.
+    comparisonsN <- (length(all_models) * (length(all_models)-1))/2
+    anova_tbl <- data.frame(dAIC = rep(NA, comparisonsN),
+                            df1 = rep(NA, comparisonsN),
+                            df2 = rep(NA, comparisonsN),
+                            F= rep(NA, comparisonsN),
+                            p.value= rep(NA, comparisonsN))
+    iRow <- 1
+    pairs_labels <- rep('', comparisonsN)
+    for(iModel1 in 1:(length(all_models)-1)){
+      for(iModel2 in (iModel1+1):length(all_models)){
+        pairs_labels[iRow] <- paste(all_models[[iModel1]]$transformation, all_models[[iModel2]]$transformation, sep=' vs. ')
+
+        anova_tbl$df1[iRow]<- all_models[[iModel2]]$df_model-all_models[[iModel1]]$df_model
+        anova_tbl$df2[iRow]<- all_models[[iModel2]]$df_residual
+        anova_tbl$F[iRow] <- (anova_tbl$df2[iRow]/anova_tbl$df1[iRow])*((all_models[[iModel2]]$r.squared-all_models[[iModel1]]$r.squared)/(1-all_models[[iModel2]]$r.squared))
+        anova_tbl$p.value[iRow]<- pf(anova_tbl$F[iRow], anova_tbl$df1[iRow], anova_tbl$df2[iRow], lower.tail = FALSE, log.p = FALSE)
+        anova_tbl$dAIC[iRow] <- 2*nrow(all_models[[iModel2]]$fitted_values)*log((1-all_models[[iModel2]]$r.squared)/
+                                (1-all_models[[iModel1]]$r.squared))+2*(all_models[[iModel2]]$npredictors-all_models[[iModel1]]$npredictors)
+
+
+        iRow <- iRow + 1
+      }
+      row.names(anova_tbl) <- pairs_labels
+    }
+  }
+
+  # packaging
+  anova_object <- list(anova_table = anova_tbl)
+  class(anova_object) <- 'anova.lm2'
+  return(anova_object)
+}
 
 
 #' @export
