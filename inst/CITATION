@@ -1,0 +1,10 @@
+bibentry(bibtype = "Article",
+         journal = "Journal of Statistical Software, Code Snippets",
+         volume = 52,
+         number = 1,
+         pages = "1-11",
+         title = "BiDimRegression: Bidimensional Regression Modeling Using R",
+         author = c(person("Claus-Christian", "Carbon")),
+         year = 2013,
+         doi = "0.18637/jss.v052.c01",
+         url = "https://cran.r-project.org/web/packages/BiDimRegression/")
