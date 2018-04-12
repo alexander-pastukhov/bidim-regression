@@ -29,7 +29,7 @@ An object of class "lm" is a list containing at least the following components:
 \item{\code{F, p.value}}{F-statistics and the corresponding p-value, given the \code{df_model} and \code{df_residual} degrees of freedom.}
 \item{\code{dAIC}}{Akaike Information Criterion (AIC) difference between the regression model and the null model. A negative values indicates that the regression model is better. See \cite{Nakaya (1997)}.}
 \item{\code{distortion_index}}{Distortion index following \cite{Waterman and Gordon (1984)}, as adjusted by \cite{Friedman and Kohler (2003)}}
-\item{\code{lm}}{an underlying \link[=lm]{linear model}}
+\item{\code{lm}}{an underlying \link[=lm]{linear model} for \code{Euclidean} and \code{affine} transformations.}
 \item{\code{formula}}{formula, describing input and output columns}
 \item{\code{data}}{data used to fit the model}
 \item{\code{Call}}{function call information, incorporates the \code{formula}, \code{transformation}, and \code{data}.}
