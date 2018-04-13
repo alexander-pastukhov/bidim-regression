@@ -40,3 +40,6 @@ The author (CCC) is grateful to Waldo R. Tobler, now Professor Emeritus at the D
 * Friedman, A., & Kohler, B. (2003). Bidimensional regression: Assessing the configural similarity and accuracy of cognitive maps and other two-dimensional data sets. Psychological Methods, 8(4), 468-491.
 * Nakaya, T. (1997). Statistical inferences in bidimensional regression models. Geographical Analysis, 29(2), 169-186.
 * Waterman, S., & Gordon, D. (1984). A quantitative-comparative approach to analysis of distortion in mental maps. Professional Geographer, 36(3), 326-337.
+
+## License
+All code is licensed under the [GPL 3.0](https://opensource.org/licenses/GPL-3.0) license.
