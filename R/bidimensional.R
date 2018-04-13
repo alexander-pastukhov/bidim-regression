@@ -71,7 +71,13 @@ lm2.formula <-  function(formula, data, transformation){
   # Extract variables from dataframe ----------------------------------------
   model_formula <- Formula::Formula(formula)
   DV <- Formula::model.part(model_formula, data = data, lhs = 1)
+  if (any(!sapply(DV, is.numeric))){
+    stop('Non-numeric dependent varaible')
+  }
   IV <- Formula::model.part(model_formula, data = data, rhs = 1)
+  if (any(!sapply(IV, is.numeric))){
+    stop('Non-numeric independent varaible')
+  }
 
   # Fit the model -----------------------------------------------------------
   lm2model <- lm2fit(cbind(DV, IV), tolower(transformation))
@@ -446,7 +452,7 @@ predict.lm2 <-  function(object, newdata) {
   newdata$z <- 1
   newly_fitted <- data.matrix(newdata) %*% object$transformation_matrix
   newly_fitted <- newly_fitted[, 1:2]/newly_fitted[, 3]
-  colnames(newly_fitted) <- colnames(newdata)[1:2]
+  # colnames(newly_fitted) <- colnames(newdata)[1:2]
   return(newly_fitted)
 }
 
