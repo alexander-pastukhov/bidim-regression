@@ -7,4 +7,4 @@ bibentry(bibtype = "Article",
          author = c(person("Claus-Christian", "Carbon")),
          year = 2013,
          doi = "0.18637/jss.v052.c01",
-         url = "https://cran.r-project.org/web/packages/BiDimRegression/")
+         url = "https://CRAN.R-project.org/package=BiDimRegression")
