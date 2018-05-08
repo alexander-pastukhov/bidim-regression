@@ -9,7 +9,7 @@ lm2fit(data, transformation)
 \arguments{
 \item{data}{the preprocessed data frame from \code{\link{lm2}} function,
 so that the first two columns are the dependent variables and the other
-two are indepdent variables}
+two are independent variables}
 
 \item{transformation}{the transformation to be used, either \code{'euclidean'} or \code{'affine'}.}
 }

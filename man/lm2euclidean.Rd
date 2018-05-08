@@ -9,7 +9,7 @@ lm2euclidean(data)
 \arguments{
 \item{data}{the preprocessed data frame from \code{\link{lm2}} function,
 so that the first two columns are the dependent variables and the other
-two are indepdent variables}
+two are independent variables}
 }
 \value{
 object with transformation specific data to be supplemented with further stats

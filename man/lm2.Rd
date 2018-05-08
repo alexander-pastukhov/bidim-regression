@@ -8,7 +8,7 @@ lm2(formula, data, transformation)
 }
 \arguments{
 \item{formula}{a symbolic description of the model to be fitted in the format \code{A + B ~ C + D}, where
-\code{A} and \code{B} are dependent and \code{C} and \code{D} are indepdent variables}
+\code{A} and \code{B} are dependent and \code{C} and \code{D} are independent variables}
 
 \item{data}{a data frame containing variables for the model.}
 
