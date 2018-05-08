@@ -43,6 +43,8 @@ lm2euc <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'euclidean')
 lm2aff <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'affine')
 lm2prj <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'projective')
 anova(lm2euc, lm2aff, lm2prj)
+predict(lm2euc)
+summary(lm2euc)
 }
 \seealso{
 \code{\link{anova.lm2}} \code{\link{BiDimRegression}}

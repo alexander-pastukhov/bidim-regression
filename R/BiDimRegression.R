@@ -34,6 +34,7 @@
 #' print(resultingMeasures)
 #'
 #' @seealso \code{\link{lm2}}
+#' @importFrom stats pf lm
 BiDimRegression <-
 function (coord)
 {
@@ -344,6 +345,7 @@ function (coord)
 }
 
 #' @export
+#' @importFrom stats printCoefmat
 print.BiDimRegression <-
 function(x, ...)
 {

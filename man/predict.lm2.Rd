@@ -4,13 +4,15 @@
 \alias{predict.lm2}
 \title{Predict method for Bidimensional Regression Model Fits}
 \usage{
-\method{predict}{lm2}(object, newdata)
+\method{predict}{lm2}(object, newdata, ...)
 }
 \arguments{
 \item{object}{an object of class "lm2"}
 
 \item{newdata}{An optional two column data frame with independent variables.
 If omitted, the fitted values are used.}
+
+\item{...}{optional arguments}
 }
 \value{
 a two column data frame with predicted values for dependent variables.

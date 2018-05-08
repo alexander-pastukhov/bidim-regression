@@ -113,6 +113,7 @@ lm2.formula <-  function(formula, data, transformation){
 #' for the description.
 #'
 #' @keywords internal
+#' @importFrom stats pf
 lm2fit <- function(data, transformation){
   lm2model <- switch(transformation,
                      euclidean = lm2euclidean(data),
@@ -159,6 +160,7 @@ lm2fit <- function(data, transformation){
 #'
 #' @return object with transformation specific data to be supplemented with further stats
 #' @keywords internal
+#' @importFrom stats lm predict setNames
 lm2euclidean <- function(data){
 
   lm2model <- list(transformation= 'euclidean',
@@ -215,6 +217,7 @@ lm2euclidean <- function(data){
 #'
 #' @return object with transformation specific data to be supplemented with further stats
 #' @keywords internal
+#' @importFrom stats lm predict setNames
 lm2affine <- function(data){
   lm2model <- list(transformation= 'affine',
                    npredictors= 6,
@@ -289,6 +292,7 @@ lm2affine <- function(data){
 #'
 #' @return object with transformation specific data to be supplemented with further stats
 #' @keywords internal
+#' @importFrom stats setNames
 lm2projective <- function(data){
   ## Preparing a placeholder for the class
   lm2model <- list(transformation= 'projective',
@@ -339,25 +343,25 @@ lm2projective <- function(data){
 # Printing and summary ----------------------------------------------------
 
 #' @export
-print.lm2 <- function(object){
+print.lm2 <- function(x, ...){
   cat(sprintf('Call:\n'))
-  cat(deparse(object$Call))
+  cat(deparse(x$Call))
   cat('\n\n')
   cat('Coefficients:\n')
-  coeff <- data.frame(as.list(object$coeff))
+  coeff <- data.frame(as.list(x$coeff))
   rownames(coeff) <- ''
   printCoefmat(coeff)
 
   # transformed coefficients, if applicable
-  if ("transformed_coeff" %in% names(object)){
+  if ("transformed_coeff" %in% names(x)){
     cat('\nTransformed coefficients:\n')
-    transformed_coeff <- data.frame(as.list(object$transformed_coeff))
+    transformed_coeff <- data.frame(as.list(x$transformed_coeff))
     rownames(transformed_coeff) <- ''
     printCoefmat(transformed_coeff)
   }
 
   # correlation strength
-  cat('\nMultiple R-squared:', object$r.squared, '\tAdjusted R-squared:', object$adj.r.squared)
+  cat('\nMultiple R-squared:', x$r.squared, '\tAdjusted R-squared:', x$adj.r.squared)
 }
 
 
@@ -370,7 +374,7 @@ print.lm2 <- function(object){
 #'
 #' @export
 #' @keywords internal
-summary.lm2 <- function(object){
+summary.lm2 <- function(object, ...){
   # copying most of the object
   object_summary<- object
   class(object_summary) <- "summary.lm2"
@@ -390,34 +394,34 @@ summary.lm2 <- function(object){
 }
 
 #' @export
-print.summary.lm2 <- function(object){
+print.summary.lm2 <- function(x, ...){
   cat(sprintf('Call:\n'))
-  cat(deparse(object$Call))
+  cat(deparse(x$Call))
   cat('\n\n')
   cat('Coefficients:\n')
-  printCoefmat(object$coeff)
+  printCoefmat(x$coeff)
 
   # transformed coefficients
-  if ('transformed_coeff' %in% names(object)){
+  if ('transformed_coeff' %in% names(x)){
     cat('\nTransformed coefficients:\n')
-    transformed_coeff <- data.frame(as.list(object$transformed_coeff))
+    transformed_coeff <- data.frame(as.list(x$transformed_coeff))
     rownames(transformed_coeff) <- ''
     printCoefmat(transformed_coeff)
   }
 
   # distortion index
   cat('\nDistortion index:\n')
-  di <- t(object$distortion_index)
+  di <- t(x$distortion_index)
   rownames(di)<- c('Distortion distance, squared',
                    'Maximal distortion distance, squared',
                    'Distortion index, squared')
   printCoefmat(di)
 
   # statistics
-  cat('\nMultiple R-squared:', object$r.squared, '\tAdjusted R-squared:', object$adj.r.squared)
-  cat('\nF-statistic:', object$F, 'on', object$df_model, 'and', object$df_residual, 'DF, p-value:', format.pval(object$p.value))
-  cat('\nDifference in AIC to the null model:', object$dAIC)
-  if (object$dAIC<2){
+  cat('\nMultiple R-squared:', x$r.squared, '\tAdjusted R-squared:', x$adj.r.squared)
+  cat('\nF-statistic:', x$F, 'on', x$df_model, 'and', x$df_residual, 'DF, p-value:', format.pval(x$p.value))
+  cat('\nDifference in AIC to the null model:', x$dAIC)
+  if (x$dAIC<2){
     cat('*')
   }
 }
@@ -432,6 +436,7 @@ print.summary.lm2 <- function(object){
 #' @param object an object of class "lm2"
 #' @param newdata An optional two column data frame with independent variables.
 #' If omitted, the fitted values are used.
+#' @param ... optional arguments
 #'
 #' @return a two column data frame with predicted values for dependent variables.
 #' @export
@@ -440,7 +445,7 @@ print.summary.lm2 <- function(object){
 #' @examples
 #' lm2euc <- lm2(depV1+depV2~indepV1+indepV2, NakayaData, transformation = 'Euclidean')
 #' predict(lm2euc, NakayaData[, 3:4])
-predict.lm2 <-  function(object, newdata) {
+predict.lm2 <-  function(object, newdata, ...) {
   # returning predictions for original independent variable values
   if (missing(newdata)){
     return(object$fitted_values)
@@ -479,6 +484,7 @@ predict.lm2 <-  function(object, newdata) {
 #' lm2euc <- lm2(depV1+depV2~indepV1+indepV2, NakayaData, transformation = 'Euclidean')
 #' lm2aff <- lm2(depV1+depV2~indepV1+indepV2, NakayaData, transformation = 'Affine')
 #' anova(lm2euc, lm2aff)
+#' @importFrom stats pf
 anova.lm2 <- function(object, ...)
 {
   # checkings whether dots are lm2 objects
@@ -497,7 +503,7 @@ anova.lm2 <- function(object, ...)
   # checking for duplicate transforms
   transforms <- sapply(all_models, function(lm2object){lm2object$transformation})
   retain <- rep(TRUE, length(all_models))
-  for(iModel in 2:length(tranforms)){
+  for(iModel in 2:length(transforms)){
     if (transforms[iModel] %in% transforms[1:(iModel-1)]){
       retain[iModel] <- FALSE
     }
@@ -558,7 +564,7 @@ anova.lm2 <- function(object, ...)
 
 
 #' @export
-print.anova.lm2 <- function(object){
+print.anova.lm2 <- function(x, ...){
   cat('Bidimensional regression:\n')
-  printCoefmat(object$anova_table, cs.ind = c(1,4), P.values= TRUE, has.Pvalue=TRUE, na.print = '')
+  printCoefmat(x$anova_table, cs.ind = c(1,4), P.values= TRUE, has.Pvalue=TRUE, na.print = '')
 }

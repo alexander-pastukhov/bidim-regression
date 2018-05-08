@@ -4,7 +4,7 @@
 \alias{summary.lm2}
 \title{Makes a lightweight summary lm2 object}
 \usage{
-\method{summary}{lm2}(object)
+\method{summary}{lm2}(object, ...)
 }
 \arguments{
 \item{object}{an object of class "lm2", see \code{\link{lm2}}}
