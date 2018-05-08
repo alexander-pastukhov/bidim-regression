@@ -10,9 +10,6 @@ The package is described in detail in: Carbon, C. C. (2013). BiDimRegression: Bi
 library("devtools"); install_github("alexander-pastukhov/bidim-regression",dependencies=TRUE)
 ```
 
-## What's new in version 2
-Added `lm2` S3-class to implement an interface consistent with that of R in general and of `lm` in particular.
-
 ## Examples
 * Using legacy `BiDimRegression` function:
 ```
