@@ -10,7 +10,7 @@ library(Formula)
 #' lm2(formula, data, transformation)
 #'
 #' @param formula a symbolic description of the model to be fitted in the format \code{A + B ~ C + D}, where
-#' \code{A} and \code{B} are dependent and \code{C} and \code{D} are indepdent variables
+#' \code{A} and \code{B} are dependent and \code{C} and \code{D} are independent variables
 #' @param data a data frame containing variables for the model.
 #' @param transformation the transformation to be used, either \code{'euclidean'}, \code{'affine'}, or \code{'projective'}.
 #'
@@ -106,7 +106,7 @@ lm2.formula <-  function(formula, data, transformation){
 #'
 #' @param data the preprocessed data frame from \code{\link{lm2}} function,
 #' so that the first two columns are the dependent variables and the other
-#' two are indepdent variables
+#' two are independent variables
 #' @param transformation the transformation to be used, either \code{'euclidean'} or \code{'affine'}.
 #'
 #' @return returns an object of class "lm2", see \code{\link{lm2}}
@@ -156,7 +156,7 @@ lm2fit <- function(data, transformation){
 #'
 #' @param data the preprocessed data frame from \code{\link{lm2}} function,
 #' so that the first two columns are the dependent variables and the other
-#' two are indepdent variables
+#' two are independent variables
 #'
 #' @return object with transformation specific data to be supplemented with further stats
 #' @keywords internal
@@ -213,7 +213,7 @@ lm2euclidean <- function(data){
 #'
 #' @param data the preprocessed data frame from \code{\link{lm2}} function,
 #' so that the first two columns are the dependent variables and the other
-#' two are indepdent variables
+#' two are independent variables
 #'
 #' @return object with transformation specific data to be supplemented with further stats
 #' @keywords internal
@@ -288,7 +288,7 @@ lm2affine <- function(data){
 #'
 #' @param data the preprocessed data frame from \code{\link{lm2}} function,
 #' so that the first two columns are the dependent variables and the other
-#' two are indepdent variables
+#' two are independent variables
 #'
 #' @return object with transformation specific data to be supplemented with further stats
 #' @keywords internal
