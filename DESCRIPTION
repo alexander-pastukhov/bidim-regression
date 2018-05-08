@@ -10,7 +10,7 @@ Imports:
   Formula
 Depends: R (>= 1.8.0)
 Description: Calculates the bidimensional regression between two 2D configurations following the approach by Tobler (1965).
-License: GPL 3.0
+License: GPL-3
 URL: http://www.r-project.org, http://www.experimental-psychology.de
 NeedsCompilation: no
 Repository: CRAN
