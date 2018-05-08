@@ -11,7 +11,7 @@ Imports:
 Depends: R (>= 1.8.0)
 Description: Calculates the bidimensional regression between two 2D configurations following the approach by Tobler (1965).
 License: GPL-3
-URL: http://www.r-project.org, http://www.experimental-psychology.de
+URL: https://CRAN.R-project.org/package=BiDimRegression
 NeedsCompilation: no
 Repository: CRAN
 RoxygenNote: 6.0.1
