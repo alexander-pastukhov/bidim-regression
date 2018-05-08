@@ -13,7 +13,7 @@ BiDimRegression(coord)
 an S3 class \code{BiDimRegression} containing all essential measures of the bidimensional regression
 \itemize{
 \item \code{euclidean.r, affine.r} - the regression coefficient, defined analogously to Pearson's r.
-\item \code{euclidean.rsqr, affine.rsqr} - the sqaured regression coefficient.
+\item \code{euclidean.rsqr, affine.rsqr} - the squared regression coefficient.
 \item \code{euclidean.diABSqr, affine.diABSqr} - the squared distortion index for dependent variables; following Waterman and Gordon's (1984) extension of the bidimensional regression, it provides a measure of comparison of distortions, but the range of values is 0 to 1 following Friedman and Kohler (2003).
 \item \code{euclidean.dMaxABSqr, affine.dMaxABSqr} - the maximal squared distortion index for dependent variables.
 \item \code{euclidean.diXYSqr, affine.diXYSqr} - the distortion index for independent variables.
