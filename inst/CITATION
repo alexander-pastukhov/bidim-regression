@@ -6,5 +6,5 @@ bibentry(bibtype = "Article",
          title = "BiDimRegression: Bidimensional Regression Modeling Using R",
          author = c(person("Claus-Christian", "Carbon")),
          year = 2013,
-         doi = "0.18637/jss.v052.c01",
+         doi = "10.18637/jss.v052.c01",
          url = "https://CRAN.R-project.org/package=BiDimRegression")
