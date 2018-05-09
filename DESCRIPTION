@@ -6,7 +6,8 @@ Authors@R: c(
   person("Claus-Christian", "Carbon", role = c("aut"), email ="ccc@experimental-psychology.com"),
   person("Alexander (Sasha)", "Pastukhov", role = c("cre", "ctb"), email ="pastukhov.alexander@gmail.com"))
 Imports:
-  Formula
+  Formula,
+  methods
 Depends: R (>= 1.8.0)
 Description: Calculates the bidimensional regression between two 2D configurations following the approach by Tobler (1965).
 License: GPL-3

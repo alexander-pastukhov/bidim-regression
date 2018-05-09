@@ -45,6 +45,7 @@ library(Formula)
 lm2 <- function(formula, data, transformation) { UseMethod("lm2") }
 
 #' @export
+#' @importFrom methods is
 lm2.formula <-  function(formula, data, transformation){
 
   # Check arguments ---------------------------------------------------------
