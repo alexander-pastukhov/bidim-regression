@@ -1,6 +1,6 @@
 Package: BiDimRegression
 Version: 2.0.0.0
-Date: 2014-03-22
+Date: 2018-05-09
 Title: Calculates the Bidimensional Regression Between Two 2D Configurations
 Authors@R: c(
   person("Claus-Christian", "Carbon", role = c("aut", "cre"), email ="ccc@experimental-psychology.com"),
