@@ -155,6 +155,9 @@ function (coord)
 	euc_dDistanceXYSqr <- euc_dDistanceXY*euc_dDistanceXY
 	euc_dMaxXYSqr <- sum((X-Xm)*(X-Xm)+((Y-Ym)*(Y-Ym)))
 	euc_dMaxXY <- sqrt(euc_dMaxXYSqr)
+	euc_diXYSqr <- euc_dDistanceXYSqr/euc_dMaxXYSqr
+	euc_diXY <- sqrt(euc_diXYSqr)
+
 	# --- second: calculating distortion index for target configuration
 	euc_dDistanceAB <- sqrt(sum((A-euc_Apred)*(A-euc_Apred))+sum((B-euc_Bpred)*(B-euc_Bpred)))
 	euc_dDistanceABSqr <- euc_dDistanceAB*euc_dDistanceAB
@@ -163,8 +166,6 @@ function (coord)
 	euc_diABSqr <- euc_dDistanceABSqr/euc_dMaxABSqr
 	euc_diAB <- sqrt(euc_diABSqr)
 
-	euc_diXYSqr <- euc_dDistanceABSqr/euc_dMaxXYSqr
-	euc_diXY <- sqrt(euc_diXYSqr)
 
 	# ------- Calculation of DAIC (Difference AIC = Akaike Information Criterion)
 	#      DAICso: AIC difference DAICso between a bidimensional regression model and
@@ -291,6 +292,10 @@ function (coord)
 	aff_dMaxXY <- sqrt(aff_dMaxXYSqr)
 	euc_dMaxXY <- sqrt(euc_dMaxXYSqr)
 
+	aff_diXYSqr <- aff_dDistanceXYSqr/aff_dMaxXYSqr
+	aff_diXY <- sqrt(aff_diXYSqr)
+
+
 	# --- second: calculating distortion index for target configuration
 	aff_dDistanceAB <- sqrt(sum((A-aff_Apred)*(A-aff_Apred))+sum((B-aff_Bpred)*(B-aff_Bpred)))
 	aff_dDistanceABSqr <- aff_dDistanceAB*aff_dDistanceAB
@@ -299,8 +304,6 @@ function (coord)
 	aff_diABSqr <- aff_dDistanceABSqr/aff_dMaxABSqr
 	aff_diAB <- sqrt(aff_diABSqr)
 
-	aff_diXYSqr <- aff_dDistanceABSqr/aff_dMaxXYSqr
-	aff_diXY <- sqrt(aff_diXYSqr)
 
 
 	# ------- Calculation of DAIC (Difference AIC = Akaike Information Criterion)
