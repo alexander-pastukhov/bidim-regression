@@ -116,7 +116,10 @@ function (coord)
 	# calculating the rotation (angle) (=theta)
 	euc_angleRAD <- atan(euc_beta$coeff[2]/euc_beta$coeff[1])
 	euc_angleDEG <- euc_angleRAD*180/pi
-
+	if (euc_beta$coeff[1] < 0)
+	{
+	  euc_angleDEG <- euc_angleDEG + 180
+	}
 	# calculating the shear (gamma)
 	euc_shear = 0L # per definition shear must be ZERO within an Euclidean geometry
 
@@ -232,9 +235,9 @@ function (coord)
 	aff_angleRAD <- atan(aff_beta$coeff[3]/aff_beta$coeff[1])
 	aff_angleDEG <- aff_angleRAD*180/pi
 	if (aff_beta$coeff[1] < 0)
-		{
-    		aff_angleDEG <- aff_angleDEG+180
-		}
+	{
+  		aff_angleDEG <- aff_angleDEG+180
+	}
 
 	# calculating the shear (gamma)
 	aff_shear <- (((aff_beta$coeff[4]/aff_beta$coeff[2])*sin(aff_angleRAD))+cos(aff_angleRAD))/
