@@ -4,6 +4,9 @@
     <loc>https://alexander-pastukhov.github.io/bidim-regression/404.html</loc>
   </url>
   <url>
+    <loc>https://alexander-pastukhov.github.io/bidim-regression/LICENSE.html</loc>
+  </url>
+  <url>
     <loc>https://alexander-pastukhov.github.io/bidim-regression/articles/calibration.html</loc>
   </url>
   <url>
@@ -16,13 +19,7 @@
     <loc>https://alexander-pastukhov.github.io/bidim-regression/index.html</loc>
   </url>
   <url>
-    <loc>https://alexander-pastukhov.github.io/bidim-regression/LICENSE.html</loc>
-  </url>
-  <url>
     <loc>https://alexander-pastukhov.github.io/bidim-regression/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://alexander-pastukhov.github.io/bidim-regression/reference/anova.lm2.html</loc>
   </url>
   <url>
     <loc>https://alexander-pastukhov.github.io/bidim-regression/reference/BiDimRegression.html</loc>
@@ -46,6 +43,12 @@
     <loc>https://alexander-pastukhov.github.io/bidim-regression/reference/FriedmanKohlerData2.html</loc>
   </url>
   <url>
+    <loc>https://alexander-pastukhov.github.io/bidim-regression/reference/NakayaData.html</loc>
+  </url>
+  <url>
+    <loc>https://alexander-pastukhov.github.io/bidim-regression/reference/anova.lm2.html</loc>
+  </url>
+  <url>
     <loc>https://alexander-pastukhov.github.io/bidim-regression/reference/index.html</loc>
   </url>
   <url>
@@ -62,9 +65,6 @@
   </url>
   <url>
     <loc>https://alexander-pastukhov.github.io/bidim-regression/reference/lm2projective.html</loc>
-  </url>
-  <url>
-    <loc>https://alexander-pastukhov.github.io/bidim-regression/reference/NakayaData.html</loc>
   </url>
   <url>
     <loc>https://alexander-pastukhov.github.io/bidim-regression/reference/predict.lm2.html</loc>
