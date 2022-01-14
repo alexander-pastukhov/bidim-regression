@@ -6,3 +6,4 @@ BiDimRegression.Rproj
 .Rbuildignore
 BiDimRegrOutput.txt
 inst/doc
+docs
