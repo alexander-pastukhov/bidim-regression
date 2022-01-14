@@ -1,0 +1,10 @@
+pandoc: 2.14.0.3
+pkgdown: 2.0.1
+pkgdown_sha: ~
+articles:
+  calibration: calibration.html
+last_built: 2022-01-14T11:34Z
+urls:
+  reference: https://alexander-pastukhov.github.io/bidim-regression/reference
+  article: https://alexander-pastukhov.github.io/bidim-regression/articles
+

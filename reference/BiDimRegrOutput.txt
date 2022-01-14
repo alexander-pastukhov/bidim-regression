@@ -1,0 +1,73 @@
+
+-------------------
+BiDimRegression 1.0.6 
+Date-Time: Fri Jan 14 12:34:50 2022
+----------------------------------------------------------------------
+
+--- overall statistics ---
+                r   r-sqr F-value df1 df2 p-value    
+Euclidean   0.969   0.938 258.199   2  34  <2e-16 ***
+Affine      0.980   0.961 196.124   4  32  <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+----------------------------------------------------------------------
+
+--- parameters ---
+
+- Euclidean -
+       Parameter Std.Err t-value df p-value
+alpha1    0.1408  0.0959  1.4684 32    0.15
+alpha2   -0.0106  0.0959 -0.1104 32    0.91
+
+       Parameter Std.Err t-value df p-value    
+beta1     1.3487  0.0644 20.9557 32 < 2e-16 ***
+beta2     0.5657  0.0644  8.7897 32 2.8e-10 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+- Affine -
+       Parameter Std.Err t-value df p-value  
+alpha1    0.1929  0.0835  2.3087 32   0.028 *
+alpha2   -0.1191  0.0835 -1.4251 32   0.164  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+       Parameter Std.Err t-value df p-value    
+beta1     1.3220  0.0794 16.6454 32 < 2e-16 ***
+beta2    -0.3715  0.0724 -5.1305 32 1.4e-05 ***
+beta3     0.8189  0.0794 10.3106 32 1.1e-11 ***
+beta4     1.4350  0.0724 19.8194 32 < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+----------------------------------------------------------------------
+
+--- details ---
+
+- Euclidean -			- Affine -
+scaleX	= scaleY = 1.463	scaleX	= 1.555, scaleY = 1.416
+shear	= 0.000			shear	= 0.311
+angle	= 22.755 DEG		angle	= 31.775 DEG
+---				---
+DAIC (agst.0)	= -101.80	DAIC (agst.0)	= -115.09
+---				---
+dMaxABSqr	= 83.681	dMaxABSqr	= 83.681
+diABSqr  	= 0.062		diABSqr  	= 0.039
+dMaxXYSqr	= 36.706	dMaxXYSqr	= 36.706
+diXYSqr  	= 0.514		diXYSqr  	= 0.168
+----------------------------------------------------------------------
+
+--- comparative statistics of fitted bidimensional regxsion models
+
+                     F-value df1 df2 p-value    
+Euclidean vs. Affine    9.22   2  32 0.00069 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+DAICea = -13.290 (significantly better: Affine solution)
+
+**********************************************************************
+
+
