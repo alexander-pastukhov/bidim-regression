@@ -180,7 +180,7 @@ lm2euclidean <- function(data){
     b2 = c(-data[, 4], data[, 3]))
 
   # using lm to fit the model
-  lm2model$lm <- stats::lm(y ~ 0 + a1 + a2 + b1 +b2, data= lm_data)
+  lm2model$lm <- stats::lm(y ~ 0 + a1 + a2 + b1 + b2, data= lm_data)
 
   # coefficients and the transformation matrix
   lm2model$coeff <- summary(lm2model$lm)$coeff[, 1]
@@ -238,7 +238,7 @@ lm2affine <- function(data){
     b4= c(cZeros, data[, 4]))
 
   # using lm to fit the model
-  lm2model$lm <- stats::lm(y ~ 0 + a1 + a2 + b1 +b2 +b3 +b4, data= lm_data)
+  lm2model$lm <- stats::lm(y ~ 0 + a1 + a2 + b1 + b2 + b3 +b4, data= lm_data)
 
   # coefficients and the transformation matrix
   lm2model$coeff <- summary(lm2model$lm)$coeff[, 1]
