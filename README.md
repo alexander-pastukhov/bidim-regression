@@ -1,5 +1,5 @@
 # BiDimRegression
-
+[![DOI](https://zenodo.org/badge/128784205.svg)](https://zenodo.org/badge/latestdoi/128784205)
 Package to calculate the bidimensional regression between two 2D configurations following the approach by Tobler (1965).
 
 The package is described in detail in: Carbon, C. C. (2013). BiDimRegression: Bidimensional Regression Modeling Using R. Journal of Statistical Software,\ Code Snippets, 52(1), 1-11, doi: [10.18637/jss.v052.c01](http://dx.doi.org/10.18637/jss.v052.c01).
