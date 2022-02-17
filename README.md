@@ -1,24 +1,41 @@
 # BiDimRegression
+<!-- badges: start -->
 [![DOI](https://zenodo.org/badge/128784205.svg)](https://zenodo.org/badge/latestdoi/128784205)
+[![CRAN status](https://www.r-pkg.org/badges/version/BiDimRegression)](https://cran.r-project.org/package=BiDimRegression)
+<!-- badges: end -->
 
 Package to calculate the bidimensional regression between two 2D configurations following the approach by Tobler (1965).
 
 The package is described in detail in: Carbon, C. C. (2013). BiDimRegression: Bidimensional Regression Modeling Using R. Journal of Statistical Software,\ Code Snippets, 52(1), 1-11, doi: [10.18637/jss.v052.c01](http://dx.doi.org/10.18637/jss.v052.c01).
 
-## Installation from Github
-
+## Installation 
+From CRAN
+```r
+install.packages("BiDimRegression")
 ```
-library("devtools"); install_github("alexander-pastukhov/bidim-regression",dependencies=TRUE)
+
+From Github
+```r
+library("devtools");
+install_github("alexander-pastukhov/bidim-regression",
+               dependencies=TRUE)
+```
+
+If you want vignettes, use
+```r
+devtools::install_github("alexander-pastukhov/tridim-regression",
+                         dependencies=TRUE,
+                         build_vignettes = TRUE)
 ```
 
 ## Examples
 * Using legacy `BiDimRegression` function:
-```
+```r
 print(BiDimRegression(NakayaData))
 ```
 
 * Using `lm2` S3-class:
-```
+```r
 lm2euc <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'euclidean')
 lm2aff <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'affine')
 lm2prj <- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'projective')
