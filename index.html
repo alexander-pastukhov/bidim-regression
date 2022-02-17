@@ -52,7 +52,14 @@
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
 </form>
 
-      <ul class="navbar-nav"></ul>
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/alexander-pastukhov/bidim-regression/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 
     
@@ -62,12 +69,26 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="bidimregression">BiDimRegression<a class="anchor" aria-label="anchor" href="#bidimregression"></a>
 </h1></div>
-<p><a href="https://zenodo.org/badge/latestdoi/128784205" class="external-link"><img src="https://zenodo.org/badge/128784205.svg" alt="DOI"></a> Package to calculate the bidimensional regression between two 2D configurations following the approach by Tobler (1965).</p>
+<!-- badges: start -->
+
+<p>Package to calculate the bidimensional regression between two 2D configurations following the approach by Tobler (1965).</p>
 <p>The package is described in detail in: Carbon, C. C. (2013). BiDimRegression: Bidimensional Regression Modeling Using R. Journal of Statistical Software, Code Snippets, 52(1), 1-11, doi: <a href="http://dx.doi.org/10.18637/jss.v052.c01" class="external-link">10.18637/jss.v052.c01</a>.</p>
 <div class="section level2">
-<h2 id="installation-from-github">Installation from Github<a class="anchor" aria-label="anchor" href="#installation-from-github"></a>
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<pre><code><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span><span class="op">)</span>; <span class="fu">install_github</span><span class="op">(</span><span class="st">"alexander-pastukhov/bidim-regression"</span>,dependencies<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre>
+<p>From CRAN</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiDimRegression"</span><span class="op">)</span></code></pre></div>
+<p>From Github</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span><span class="op">)</span>;
+<span class="fu">install_github</span><span class="op">(</span><span class="st">"alexander-pastukhov/bidim-regression"</span>,
+               dependencies<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p>If you want vignettes, use</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"alexander-pastukhov/tridim-regression"</span>,
+                         dependencies<span class="op">=</span><span class="cn">TRUE</span>,
+                         build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
@@ -75,16 +96,17 @@
 <ul>
 <li>Using legacy <code>BiDimRegression</code> function:</li>
 </ul>
-<pre><code><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="reference/BiDimRegression.html">BiDimRegression</a></span><span class="op">(</span><span class="va">NakayaData</span><span class="op">)</span><span class="op">)</span></code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="reference/BiDimRegression.html">BiDimRegression</a></span><span class="op">(</span><span class="va">NakayaData</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <ul>
 <li>Using <code>lm2</code> S3-class:</li>
 </ul>
-<pre><code>lm2euc &lt;- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'euclidean')
-lm2aff &lt;- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'affine')
-lm2prj &lt;- lm2(depV1 + depV2 ~ indepV1 + indepV2, NakayaData, 'projective')
-anova(lm2euc, lm2aff, lm2prj
-predict(lm2euc)
-summary(lm2euc)</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>lm2euc &lt;-<span class="st"> </span><span class="kw">lm2</span>(depV1 <span class="op">+</span><span class="st"> </span>depV2 <span class="op">~</span><span class="st"> </span>indepV1 <span class="op">+</span><span class="st"> </span>indepV2, NakayaData, <span class="st">'euclidean'</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>lm2aff &lt;-<span class="st"> </span><span class="kw">lm2</span>(depV1 <span class="op">+</span><span class="st"> </span>depV2 <span class="op">~</span><span class="st"> </span>indepV1 <span class="op">+</span><span class="st"> </span>indepV2, NakayaData, <span class="st">'affine'</span>)</span>
+<span id="cb5-3"><a href="#cb5-3"></a>lm2prj &lt;-<span class="st"> </span><span class="kw">lm2</span>(depV1 <span class="op">+</span><span class="st"> </span>depV2 <span class="op">~</span><span class="st"> </span>indepV1 <span class="op">+</span><span class="st"> </span>indepV2, NakayaData, <span class="st">'projective'</span>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="kw">anova</span>(lm2euc, lm2aff, lm2prj</span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="kw">predict</span>(lm2euc)</span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="kw">summary</span>(lm2euc)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="thanks">Thanks<a class="anchor" aria-label="anchor" href="#thanks"></a>
@@ -113,6 +135,8 @@ summary(lm2euc)</code></pre>
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=BiDimRegression" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/alexander-pastukhov/bidim-regression/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/alexander-pastukhov/bidim-regression/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -142,7 +166,13 @@ summary(lm2euc)</code></pre>
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://zenodo.org/badge/latestdoi/128784205" class="external-link"><img src="https://zenodo.org/badge/128784205.svg" alt="DOI"></a></li>
+<li><a href="https://cran.r-project.org/package=BiDimRegression" class="external-link"><img src="https://www.r-pkg.org/badges/version/BiDimRegression" alt="CRAN status"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
