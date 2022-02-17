@@ -26,7 +26,7 @@ BugReports: https://github.com/alexander-pastukhov/bidim-regression/issues
 Encoding: UTF-8
 NeedsCompilation: no
 Repository: CRAN
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 LazyData: true
 Suggests: testthat,
     knitr,

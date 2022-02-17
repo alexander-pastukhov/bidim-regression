@@ -27,7 +27,7 @@ library(dplyr)
 library(ggplot2)
 
 ggplot(data= EyegazeData, aes(x= x, y= y, color= target, fill= target)) +
-  geom_point(data= EyegazeData %>% group_by(target, target_x, target_y) %>% summarise(),
+  geom_point(data= EyegazeData %>% group_by(target, target_x, target_y) %>% summarise(.groups="drop"),
              aes(x= target_x, y= target_y), shape= 21, size= 10, fill= 'white') + 
   geom_point(alpha= 0.5, shape= 21) + 
   ggtitle('Raw eye gaze')
@@ -44,7 +44,7 @@ adjusted_gaze <- cbind(EyegazeData, adjusted_gaze)
 
 
 ggplot(data= adjusted_gaze, aes(x= adjX, y= adjY, color= target, fill= target)) +
-  geom_point(data= adjusted_gaze %>% group_by(target, target_x, target_y) %>% summarise(),
+  geom_point(data= adjusted_gaze %>% group_by(target, target_x, target_y) %>% summarise(.groups="drop"),
              aes(x= target_x, y= target_y), shape= 21, size= 10, fill= 'white') + 
   geom_point(alpha= 0.5, shape= 21) + 
   xlab('x')+

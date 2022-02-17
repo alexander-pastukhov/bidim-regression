@@ -28,6 +28,7 @@
 #' @md
 #'
 #' @export
+#' @importFrom utils packageVersion
 #'
 #' @examples
 #' resultingMeasures <- BiDimRegression(NakayaData)
