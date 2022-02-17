@@ -1,6 +1,6 @@
 Package: BiDimRegression
 Version: 2.0.1
-Date: 2018-05-09
+Date: 2022-02-17
 Title: Calculates the Bidimensional Regression Between Two 2D Configurations
 Authors@R: c(
   person(given = "Claus-Christian",
@@ -16,13 +16,13 @@ Authors@R: c(
 Imports:
   Formula,
   methods
-Depends: R (>= 1.8.0)
+Depends: R (>= 4.1.0)
 Description: Calculates the bidimensional regression between two 2D configurations following the approach by Tobler (1965).
 License: GPL-3
-URL: https://CRAN.R-project.org/package=BiDimRegression,
-     https://github.com/alexander-pastukhov/bidim-regression,
-     https://alexander-pastukhov.github.io/bidim-regression
-BugReports: https://github.com/alexander-pastukhov/bidim-regression/issues
+URL: https://CRAN.R-project.org/package=BiDimRegression/,
+     https://github.com/alexander-pastukhov/bidim-regression/,
+     https://alexander-pastukhov.github.io/bidim-regression/
+BugReports: https://github.com/alexander-pastukhov/bidim-regression/issues/
 Encoding: UTF-8
 NeedsCompilation: no
 Repository: CRAN
