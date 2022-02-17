@@ -12,7 +12,10 @@ Depends: R (>= 1.8.0)
 Description: Calculates the bidimensional regression between two 2D configurations following the approach by Tobler (1965).
 License: GPL-3
 URL: https://CRAN.R-project.org/package=BiDimRegression,
-    https://alexander-pastukhov.github.io/bidim-regression
+     https://github.com/alexander-pastukhov/bidim-regression,
+     https://alexander-pastukhov.github.io/bidim-regression
+BugReports: https://github.com/alexander-pastukhov/bidim-regression/issues
+Encoding: UTF-8
 NeedsCompilation: no
 Repository: CRAN
 RoxygenNote: 7.1.1
