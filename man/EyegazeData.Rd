@@ -20,6 +20,6 @@ EyegazeData
 }
 \description{
 A dataset containing a monocular eye gaze recording with calibration sequence.
-Courtesy of Bamberger Baby Institut: \href{https://www.uni-bamberg.de/entwicklungspsychologie/transfer/unsichtbar-fuer-bambi/babyforschung-bambi/}{BamBI}.
+Courtesy of Bamberger Baby Institut (BamBI).
 }
 \keyword{datasets}
