@@ -3,8 +3,16 @@ Version: 2.0.1
 Date: 2018-05-09
 Title: Calculates the Bidimensional Regression Between Two 2D Configurations
 Authors@R: c(
-  person("Claus-Christian", "Carbon", role = c("aut"), email ="ccc@experimental-psychology.com"),
-  person("Alexander (Sasha)", "Pastukhov", role = c("cre", "ctb"), email ="pastukhov.alexander@gmail.com"))
+  person(given = "Claus-Christian",
+         family = "Carbon",
+         role = c("aut"),
+         email = "ccc@experimental-psychology.com",
+         comment = c(ORCID = "0000-0002-3446-9347")),
+  person(given = "Alexander",
+         family = "Pastukhov",
+         role = c("aut", "cre"),
+         email ="pastukhov.alexander@gmail.com",
+         comment = c(ORCID = "0000-0002-8738-8591")))
 Imports:
   Formula,
   methods
